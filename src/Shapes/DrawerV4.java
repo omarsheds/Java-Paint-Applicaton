@@ -30,7 +30,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
-public class DrawerV3 extends JPanel {
+public class DrawerV4 extends JPanel {
 
     //Line Variables
     int x1, y1, x2, y2;
@@ -53,6 +53,7 @@ public class DrawerV3 extends JPanel {
     JCheckBox dotted;
 
     Vector<Line> lineVector = new Vector<Line>();
+    
     Vector<Rectangle> rectVector = new Vector<Rectangle>();
     Vector<Rectangle> filledRectVector = new Vector<Rectangle>();
 
@@ -61,9 +62,13 @@ public class DrawerV3 extends JPanel {
 
     Vector<Oval> ovalfreehandVector = new Vector<Oval>();
     Vector<Oval> eraserVector = new Vector<Oval>();
-    Vector<Integer> undoflags = new Vector<Integer>();
+    
+    Vector<Integer> order = new Vector<Integer>();
 
-    public DrawerV3() {
+    //iterators
+    int j, k, l, m, n, o, p = 0;
+
+    public DrawerV4() {
 
         this.setBackground(WHITE);
 
@@ -76,9 +81,11 @@ public class DrawerV3 extends JPanel {
         JButton red = new JButton("RED");
         red.setBounds(25, 50, 120, 30);
         this.add(red);
+        
         JButton green = new JButton("GREEN");
         green.setBounds(25, 100, 120, 30);
         this.add(green);
+        
         JButton blue = new JButton("BLUE");
         blue.setBounds(25, 150, 120, 30);
         this.add(blue);
@@ -136,6 +143,7 @@ public class DrawerV3 extends JPanel {
                 eraserVector.clear();
                 filledRectVector.clear();
                 filledOvalVector.clear();
+                order.clear();
                 x1 = x2 = x3 = x4 = x5 = x6 = y1 = y2 = y3 = y4 = y5 = y6 = 0;
                 widthRect = heightRect = widthOval = heightOval = 0;
                 repaint();
@@ -149,24 +157,24 @@ public class DrawerV3 extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                switch (undoflags.get((undoflags.size()) - 1)) {
+                switch (order.get((order.size()) - 1)) {
                     case 1:
                         lineVector.remove((lineVector.size()) - 1);
-                        undoflags.remove((undoflags.size()) - 1);
+                        order.remove((order.size()) - 1);
                         x1 = x2 = x3 = x4 = x5 = x6 = y1 = y2 = y3 = y4 = y5 = y6 = 0;
                         widthRect = heightRect = widthOval = heightOval = 0;
                         repaint();
                         break;
                     case 2:
                         filledOvalVector.remove((filledOvalVector.size()) - 1);
-                        undoflags.remove((undoflags.size()) - 1);
+                        order.remove((order.size()) - 1);
                         x1 = x2 = x3 = x4 = x5 = x6 = y1 = y2 = y3 = y4 = y5 = y6 = 0;
                         widthRect = heightRect = widthOval = heightOval = 0;
                         repaint();
                         break;
                     case 3:
                         ovalVector.remove((ovalVector.size()) - 1);
-                        undoflags.remove((undoflags.size()) - 1);
+                        order.remove((order.size()) - 1);
                         x1 = x2 = x3 = x4 = x5 = x6 = y1 = y2 = y3 = y4 = y5 = y6 = 0;
                         widthRect = heightRect = widthOval = heightOval = 0;
                         repaint();
@@ -174,23 +182,23 @@ public class DrawerV3 extends JPanel {
 
                     case 4:
                         filledRectVector.remove((filledRectVector.size()) - 1);
-                        undoflags.remove((undoflags.size()) - 1);
+                        order.remove((order.size()) - 1);
                         x1 = x2 = x3 = x4 = x5 = x6 = y1 = y2 = y3 = y4 = y5 = y6 = 0;
                         widthRect = heightRect = widthOval = heightOval = 0;
                         repaint();
                         break;
                     case 5:
                         rectVector.remove((rectVector.size()) - 1);
-                        undoflags.remove((undoflags.size()) - 1);
+                        order.remove((order.size()) - 1);
                         x1 = x2 = x3 = x4 = x5 = x6 = y1 = y2 = y3 = y4 = y5 = y6 = 0;
                         widthRect = heightRect = widthOval = heightOval = 0;
                         repaint();
                         break;
 
                     case 6:
-                        while (undoflags.get((undoflags.size()) - 1) == 6) {
+                        while (order.get((order.size()) - 1) == 6) {
                             ovalfreehandVector.remove((ovalfreehandVector.size()) - 1);
-                            undoflags.remove((undoflags.size()) - 1);
+                            order.remove((order.size()) - 1);
                             x1 = x2 = x3 = x4 = x5 = x6 = y1 = y2 = y3 = y4 = y5 = y6 = 0;
                             widthRect = heightRect = widthOval = heightOval = 0;
                             repaint();
@@ -198,9 +206,9 @@ public class DrawerV3 extends JPanel {
                         break;
 
                     case 7:
-                        while (undoflags.get((undoflags.size()) - 1) == 7) {
+                        while (order.get((order.size()) - 1) == 7) {
                             eraserVector.remove((eraserVector.size()) - 1);
-                            undoflags.remove((undoflags.size()) - 1);
+                            order.remove((order.size()) - 1);
                             x1 = x2 = x3 = x4 = x5 = x6 = y1 = y2 = y3 = y4 = y5 = y6 = 0;
                             widthRect = heightRect = widthOval = heightOval = 0;
                             repaint();
@@ -350,10 +358,10 @@ public class DrawerV3 extends JPanel {
                         if (dotted.isSelected()) {
 
                             lineVector.add(new Line(x1, y1, x2, y2, Chosen, 1));
-                            undoflags.add(1);
+                            order.add(1);
                         } else {
                             lineVector.add(new Line(x1, y1, x2, y2, Chosen, 0));
-                            undoflags.add(1);
+                            order.add(1);
                         }
                         System.out.println("Line Vector is implemented");
 
@@ -367,7 +375,7 @@ public class DrawerV3 extends JPanel {
                             heightOval = Math.abs(y6 - y5);
 
                             filledOvalVector.add(new Oval(x5, y5, widthOval, heightOval, Chosen, 0));
-                            undoflags.add(2);
+                            order.add(2);
 
                         } else {
                             x6 = e.getX();
@@ -376,11 +384,11 @@ public class DrawerV3 extends JPanel {
                             heightOval = Math.abs(y6 - y5);
                             if (dotted.isSelected()) {
                                 ovalVector.add(new Oval(x5, y5, widthOval, heightOval, Chosen, 1));
-                                undoflags.add(3);
+                                order.add(3);
 
                             } else {
                                 ovalVector.add(new Oval(x5, y5, widthOval, heightOval, Chosen, 0));
-                                undoflags.add(3);
+                                order.add(3);
                             }
                         }
 
@@ -397,7 +405,7 @@ public class DrawerV3 extends JPanel {
                             heightRect = Math.abs(y4 - y3);
 
                             filledRectVector.add(new Rectangle(x3, y3, widthRect, heightRect, Chosen, 0));
-                            undoflags.add(4);
+                            order.add(4);
 
                         } else {
                             x4 = e.getX();
@@ -406,11 +414,11 @@ public class DrawerV3 extends JPanel {
                             heightRect = Math.abs(y4 - y3);
                             if (dotted.isSelected()) {
                                 rectVector.add(new Rectangle(x3, y3, widthRect, heightRect, Chosen, 1));
-                                undoflags.add(5);
+                                order.add(5);
                                 System.out.println("Rect Vector is implemented");
                             } else {
                                 rectVector.add(new Rectangle(x3, y3, widthRect, heightRect, Chosen, 0));
-                                undoflags.add(5);
+                                order.add(5);
                             }
                         }
 
@@ -473,7 +481,7 @@ public class DrawerV3 extends JPanel {
 
                         g.fillOval(e.getX(), e.getY(), 10, 10);
                         ovalfreehandVector.add(new Oval(e.getX(), e.getY(), 10, 10, Chosen, 1));
-                        undoflags.add(6);
+                        order.add(6);
                         break;
                     case 5:
 
@@ -481,7 +489,7 @@ public class DrawerV3 extends JPanel {
                         g2.setColor(WHITE);
                         g2.fillOval(e.getX(), e.getY(), 10, 10);
                         eraserVector.add(new Oval(e.getX(), e.getY(), 10, 10, WHITE, 1));
-                        undoflags.add(7);
+                        order.add(7);
                         break;
                 }
             }
@@ -517,139 +525,107 @@ public class DrawerV3 extends JPanel {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        //To see Effect when we drag
-
+        //To see Effect when we draw
+        
+        
+        //to set drawing stroke to dotted
         Graphics2D g2d = (Graphics2D) g;
         float[] dash1 = {2f, 0f, 2f};
-
         BasicStroke bs1 = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, 1.0f, dash1, 2f);
+        
+        
+        
 
-        //To display old eraser effect we saved earlier
-        for (int i = 0; i < eraserVector.size(); i++) {
+        //To display old shapes in the same order without overlapping
+        for (int i = 0; i < order.size(); i++) {
 
-            g.setColor(eraserVector.get(i).Chosen1);
+            switch (order.get(i)) {
 
-            g.fillOval(eraserVector.get(i).x, eraserVector.get(i).y, eraserVector.get(i).width, eraserVector.get(i).height);
-        }
+                case 1:
+                    g.setColor(lineVector.get(j).Chosen1);
 
-        //To display old Ovals of freehand we saved earlier
-        for (int i = 0; i < ovalfreehandVector.size(); i++) {
+                    if (lineVector.get(j).dotted == 1) {
 
-            g.setColor(ovalfreehandVector.get(i).Chosen1);
+                        g2d.setStroke(bs1);
+                        g2d.drawLine(lineVector.get(j).x1, lineVector.get(j).y1, lineVector.get(j).x2, lineVector.get(j).y2);
+                        g2d.setStroke(new BasicStroke(1.0f));
+                    } else {
+                        g.drawLine(lineVector.get(j).x1, lineVector.get(j).y1, lineVector.get(j).x2, lineVector.get(j).y2);
+                    }
 
-            g.fillOval(ovalfreehandVector.get(i).x, ovalfreehandVector.get(i).y, ovalfreehandVector.get(i).width, ovalfreehandVector.get(i).height);
-        }
+                    j++;
+                    break;
 
-        //To display old eraser effect we saved earlier
-        for (int i = 0; i < eraserVector.size(); i++) {
+                case 2:
 
-            g.setColor(eraserVector.get(i).Chosen1);
+                    g.setColor(filledOvalVector.get(k).Chosen1);
+                    g.fillOval(filledOvalVector.get(k).x, filledOvalVector.get(k).y, filledOvalVector.get(k).width, filledOvalVector.get(k).height);
 
-            g.fillOval(eraserVector.get(i).x, eraserVector.get(i).y, eraserVector.get(i).width, eraserVector.get(i).height);
-        }
+                    k++;
+                    break;
 
-        //To display old rectangles we saved earlier
-        for (int i = 0; i < rectVector.size(); i++) {
+                case 3:
 
-            g.setColor(rectVector.get(i).Chosen1);
-            if (rectVector.get(i).dotted == 1) {
+                    g.setColor(ovalVector.get(l).Chosen1);
 
-                g2d.setStroke(bs1);
-                g2d.drawRect(rectVector.get(i).x, rectVector.get(i).y, rectVector.get(i).width, rectVector.get(i).height);
-                g2d.setStroke(new BasicStroke(1.0f));
-            } else {
-                g.drawRect(rectVector.get(i).x, rectVector.get(i).y, rectVector.get(i).width, rectVector.get(i).height);
+                    if (ovalVector.get(l).dotted == 1) {
+
+                        g2d.setStroke(bs1);
+                        g2d.drawOval(ovalVector.get(l).x, ovalVector.get(l).y, ovalVector.get(l).width, ovalVector.get(l).height);
+                        g2d.setStroke(new BasicStroke(1.0f));
+                    } else {
+                        g.drawOval(ovalVector.get(l).x, ovalVector.get(l).y, ovalVector.get(l).width, ovalVector.get(l).height);
+                    }
+
+                    l++;
+                    break;
+
+                case 4:
+                    g.setColor(filledRectVector.get(m).Chosen1);
+
+                    g.fillRect(filledRectVector.get(m).x, filledRectVector.get(m).y, filledRectVector.get(m).width, filledRectVector.get(m).height);
+
+                    m++;
+                    break;
+
+                case 5:
+                    g.setColor(rectVector.get(n).Chosen1);
+                    if (rectVector.get(n).dotted == 1) {
+
+                        g2d.setStroke(bs1);
+                        g2d.drawRect(rectVector.get(n).x, rectVector.get(n).y, rectVector.get(n).width, rectVector.get(n).height);
+                        g2d.setStroke(new BasicStroke(1.0f));
+                    } else {
+                        g.drawRect(rectVector.get(n).x, rectVector.get(n).y, rectVector.get(n).width, rectVector.get(n).height);
+                    }
+
+                    n++;
+                    break;
+                case 6:
+
+                    g.setColor(ovalfreehandVector.get(o).Chosen1);
+
+                    g.fillOval(ovalfreehandVector.get(o).x, ovalfreehandVector.get(o).y, ovalfreehandVector.get(o).width, ovalfreehandVector.get(o).height);
+
+                    o++;
+                    break;
+
+                case 7:
+
+                    g.setColor(eraserVector.get(p).Chosen1);
+
+                    g.fillOval(eraserVector.get(p).x, eraserVector.get(p).y, eraserVector.get(p).width, eraserVector.get(p).height);
+                    p++;
+                    break;
+
             }
 
         }
 
-        //To display old eraser effect we saved earlier
-        for (int i = 0; i < eraserVector.size(); i++) {
+        j = k = l = m = n = o = p = 0;
 
-            g.setColor(eraserVector.get(i).Chosen1);
-
-            g.fillOval(eraserVector.get(i).x, eraserVector.get(i).y, eraserVector.get(i).width, eraserVector.get(i).height);
-        }
-
-        //To display old Ovals we saved earlier
-        for (int i = 0; i < ovalVector.size(); i++) {
-
-            g.setColor(ovalVector.get(i).Chosen1);
-
-            if (ovalVector.get(i).dotted == 1) {
-
-                g2d.setStroke(bs1);
-                g2d.drawOval(ovalVector.get(i).x, ovalVector.get(i).y, ovalVector.get(i).width, ovalVector.get(i).height);
-                g2d.setStroke(new BasicStroke(1.0f));
-            } else {
-                g.drawOval(ovalVector.get(i).x, ovalVector.get(i).y, ovalVector.get(i).width, ovalVector.get(i).height);
-            }
-
-        }
-        //To display old eraser effect we saved earlier
-        for (int i = 0; i < eraserVector.size(); i++) {
-
-            g.setColor(eraserVector.get(i).Chosen1);
-
-            g.fillOval(eraserVector.get(i).x, eraserVector.get(i).y, eraserVector.get(i).width, eraserVector.get(i).height);
-        }
-
-        //To display old lines we saved earlier
-        for (int i = 0; i < lineVector.size(); i++) {
-
-            g.setColor(lineVector.get(i).Chosen1);
-
-            if (lineVector.get(i).dotted == 1) {
-
-                g2d.setStroke(bs1);
-                g2d.drawLine(lineVector.get(i).x1, lineVector.get(i).y1, lineVector.get(i).x2, lineVector.get(i).y2);
-                g2d.setStroke(new BasicStroke(1.0f));
-            } else {
-                g.drawLine(lineVector.get(i).x1, lineVector.get(i).y1, lineVector.get(i).x2, lineVector.get(i).y2);
-            }
-        }
-
-        //To display old eraser effect we saved earlier
-        for (int i = 0; i < eraserVector.size(); i++) {
-
-            g.setColor(eraserVector.get(i).Chosen1);
-
-            g.fillOval(eraserVector.get(i).x, eraserVector.get(i).y, eraserVector.get(i).width, eraserVector.get(i).height);
-        }
-
-        //To display old filled Ovals we saved earlier
-        for (int i = 0; i < filledOvalVector.size(); i++) {
-
-            g.setColor(filledOvalVector.get(i).Chosen1);
-            g.fillOval(filledOvalVector.get(i).x, filledOvalVector.get(i).y, filledOvalVector.get(i).width, filledOvalVector.get(i).height);
-
-        }
-
-        //To display old eraser effect we saved earlier
-        for (int i = 0; i < eraserVector.size(); i++) {
-
-            g.setColor(eraserVector.get(i).Chosen1);
-
-            g.fillOval(eraserVector.get(i).x, eraserVector.get(i).y, eraserVector.get(i).width, eraserVector.get(i).height);
-        }
-
-        //To display old rectangles we saved earlier
-        for (int i = 0; i < filledRectVector.size(); i++) {
-
-            g.setColor(filledRectVector.get(i).Chosen1);
-
-            g.fillRect(filledRectVector.get(i).x, filledRectVector.get(i).y, filledRectVector.get(i).width, filledRectVector.get(i).height);
-
-        }
-
-        //To display old eraser effect we saved earlier
-        for (int i = 0; i < eraserVector.size(); i++) {
-
-            g.setColor(eraserVector.get(i).Chosen1);
-
-            g.fillOval(eraserVector.get(i).x, eraserVector.get(i).y, eraserVector.get(i).width, eraserVector.get(i).height);
-        }
-
+        
+        //to draw live drag action of current shape
         g.setColor(Chosen);
         if (filled.isSelected()) {
             switch (flag) {
